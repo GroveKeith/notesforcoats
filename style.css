@@ -80,6 +80,43 @@ body { font-family: 'Open Sans', sans-serif; color: #333; line-height: 1.6; }
     .sponsor-item img {
         max-width: 120px;
     }
+	.hero {
+        height: auto;
+        padding: 60px 20px; /* Gives content room to breathe */
+    }
+
+    .hero h1 {
+        font-size: 2.5rem; /* Shrinks massive text to fit screen width */
+    }
+
+    .hero h2 {
+        font-size: 1.2rem;
+    }
+
+    .hero-btns {
+        display: flex;
+        flex-direction: column; /* Stacks buttons so they don't squash */
+        gap: 15px;
+    }
+
+    .btn-gold, .btn-outline {
+        margin-right: 0; /* Removes the side margin from desktop */
+        width: 100%;    /* Makes buttons full-width for easier tapping */
+    }
+	.stats-bar {
+        flex-direction: column; /* Stacks the 3 stats vertically */
+        gap: 30px;
+        padding: 40px 5%;
+    }
+
+    .stat h3 {
+        font-size: 2rem;
+    }
+	.hero-logo {
+    max-width: 150px; /* Limits size on all screens */
+    height: auto;
+    margin-bottom: 20px;
+	}
 }
 .stat h3 { font-size: 2.5rem; font-family: 'Montserrat'; }
 
@@ -95,4 +132,4 @@ body { font-family: 'Open Sans', sans-serif; color: #333; line-height: 1.6; }
     background-size: contain; /* Shows the FULL image */
     background-repeat: no-repeat;
     background-position: center; 
-}
+	}
