@@ -1,51 +1,92 @@
 :root {
-    --primary-navy: #003366;
-    --action-blue: #0071bc;
-    --accent-gold: #ffcc00;
-    --light-gray: #f4f4f4;
+    --navy: #003366;
+    --blue: #0071bc;
+    --gold: #ffcc00;
     --white: #ffffff;
+    --gray: #f4f4f4;
 }
 
-body {
-    font-family: 'Open Sans', Arial, sans-serif; /* Cleaner, more approachable font */
-    color: #333;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Header/Navigation */
+body { font-family: 'Open Sans', sans-serif; color: #333; line-height: 1.6; }
+
+/* Navbar */
 .navbar {
-    background-color: var(--white);
-    border-bottom: 4px solid var(--primary-navy);
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    padding: 20px 5%;
+    background: var(--white);
+    position: sticky; top: 0; z-index: 100;
+    border-bottom: 4px solid var(--navy);
 }
 
-.nav-links a {
-    color: var(--primary-navy);
-    font-weight: bold;
-}
+.logo { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; color: var(--navy); font-weight: 800; }
+.logo span { color: var(--gold); }
+
+.nav-links a { text-decoration: none; color: var(--navy); margin-left: 25px; font-weight: 600; }
+
+.btn-nav { background: var(--gold); padding: 8px 20px; border-radius: 4px; }
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(rgba(0, 51, 102, 0.7), rgba(0, 51, 102, 0.7)), 
-                url('your-music-image.jpg') no-repeat center center/cover;
-    color: var(--white);
+    height: 80vh;
+    background: linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)), url('distillery-bg.jpg') center/cover;
+    display: flex; align-items: center; justify-content: center; text-align: center; color: white;
 }
 
-/* The Call to Action Button */
-.btn-cta {
-    background-color: var(--accent-gold);
-    color: var(--primary-navy); /* Dark text on gold is very readable */
-    padding: 12px 30px;
-    border-radius: 2px; /* Square edges look more formal/established */
-    text-transform: uppercase;
-    font-weight: 800;
+.hero h1 { font-family: 'Montserrat', sans-serif; font-size: 4rem; margin-bottom: 10px; }
+.hero h1 span { color: var(--gold); }
+.hero p { max-width: 700px; margin: 20px auto; font-size: 1.2rem; }
+
+/* Buttons */
+.btn-gold { background: var(--gold); color: var(--navy); padding: 15px 30px; text-decoration: none; font-weight: 800; border-radius: 4px; display: inline-block; margin-right: 10px; }
+.btn-outline { border: 2px solid white; color: white; padding: 13px 30px; text-decoration: none; border-radius: 4px; display: inline-block; }
+
+/* Stats Bar */
+.stats-bar {
+    background: var(--navy);
+    color: var(--gold);
+    display: flex; justify-content: space-around;
+    padding: 40px 10%;
+    text-align: center;
+}
+.sponsor-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 40px; /* Space between logos */
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
-/* Alternating Section Colors */
-.mission-section {
-    background-color: var(--white);
+.sponsor-item img {
+    max-width: 180px; /* Limits the width so they don't get too big */
+    height: auto;
+    filter: grayscale(100%); /* Makes them all uniform gray */
+    opacity: 0.7;
+    transition: all 0.3s ease;
 }
 
-.event-section {
-    background-color: var(--light-gray);
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
+.sponsor-item img:hover {
+    filter: grayscale(0%); /* Pops to color on hover */
+    opacity: 1;
+    transform: scale(1.05); /* Slight grow effect */
 }
+
+/* On mobile, make them a bit smaller */
+@media (max-width: 600px) {
+    .sponsor-item img {
+        max-width: 120px;
+    }
+}
+.stat h3 { font-size: 2.5rem; font-family: 'Montserrat'; }
+
+/* Writers Grid */
+.section-padding { padding: 80px 10%; }
+.section-title { text-align: center; color: var(--navy); margin-bottom: 50px; font-size: 2.5rem; }
+
+.writer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+.writer-card { background: var(--white); text-align: center; padding-bottom: 15px; border-bottom: 3px solid var(--gold); }
+.writer-img { height: 250px; background-size: cover; background-position: center; margin-bottom: 15px; }
