@@ -89,4 +89,10 @@ body { font-family: 'Open Sans', sans-serif; color: #333; line-height: 1.6; }
 
 .writer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
 .writer-card { background: var(--white); text-align: center; padding-bottom: 15px; border-bottom: 3px solid var(--gold); }
-.writer-img { height: 250px; background-size: cover; background-position: center; margin-bottom: 15px; }
+.writer-img { 
+    height: auto; /* Let the image dictate the height */
+    min-height: 400px; 
+    background-size: contain; /* Shows the FULL image */
+    background-repeat: no-repeat;
+    background-position: center; 
+}
