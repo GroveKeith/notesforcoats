@@ -64,51 +64,71 @@
     </section>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@sanity/client@5.2.2/dist/index.browser.js"></script>
+<script type="module">
+    // Import the client directly from a module-friendly CDN
+    import { createClient } from 'https://esm.sh/@sanity/client@5.2.2';
 
-<script>
-(function() {
-    function startApp() {
-        // 1. Check if the library is globally available
-        if (typeof SanityClient === 'undefined') {
-            console.warn("SanityClient not ready, retrying...");
-            setTimeout(startApp, 100); // Wait 100ms and try again
-            return;
-        }
+    const client = createClient({
+        projectId: 'askph19f',
+        dataset: 'production',
+        useCdn: true,
+        apiVersion: '2021-10-21'
+    });
 
-        // 2. Initialize once the library is confirmed present
-        const client = SanityClient.createClient({
-            projectId: 'askph19f',
-            dataset: 'production',
-            useCdn: true,
-            apiVersion: '2021-10-21'
-        });
-
-        async function loadData() {
-            try {
-                const home = await client.fetch(`*[_type == "homepage"][0]{
-                    ...,
-                    "bgUrl": backgroundImage.asset->url
-                }`);
-                
-                if (home) {
-                    document.getElementById('hero-title').innerHTML = `${home.heroH1}<span>'</span>`;
-                    document.getElementById('hero-subtitle').innerText = home.heroH2;
-                    document.getElementById('hero-desc').innerText = home.heroP;
-                    
-                    if (home.bgUrl) {
-                        document.querySelector('.hero').style.backgroundImage = 
-                            `linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)), url('${home.bgUrl}')`;
-                    }
+    async function loadContent() {
+        try {
+            // Fetch Homepage & Hero Background
+            const home = await client.fetch(`*[_type == "homepage"][0]{
+                ...,
+                "bgUrl": backgroundImage.asset->url
+            }`);
+            
+            if (home) {
+                document.getElementById('hero-title').innerHTML = `${home.heroH1}<span>'</span>`;
+                document.getElementById('hero-subtitle').innerText = home.heroH2;
+                document.getElementById('hero-desc').innerText = home.heroP;
+                if (home.bgUrl) {
+                    document.querySelector('.hero').style.backgroundImage = 
+                        `linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)), url('${home.bgUrl}')`;
                 }
-            } catch (err) {
-                console.error("Sanity Fetch Error:", err);
             }
+
+            // Fetch Songwriters
+            const writers = await client.fetch(`*[_type == "songwriter"] | order(year desc){
+                name, year, "imageUrl": image.asset->url
+            }`);
+            const grid = document.getElementById('songwriter-grid');
+            if (grid && writers.length > 0) {
+                grid.innerHTML = writers.map(w => `
+                    <div class="writer-card">
+                        <div class="writer-img" style="background-image: url('${w.imageUrl}')"></div>
+                        <h4>${w.name}</h4>
+                        <p>Class of ${w.year}</p>
+                    </div>
+                `).join('');
+            }
+        } catch (err) {
+            console.error("Sanity connection failed:", err);
         }
-        loadData();
     }
-    startApp();
-})();
+
+    // Attach Reader functions to 'window' so your HTML buttons can still see them
+    window.openReader = async function() {
+        const modal = document.getElementById('reader-pane');
+        const images = await client.fetch(`*[_type == "aboutReader"] | order(order asc){
+            "imageUrl": infoSheetImage.asset->url
+        }`);
+        document.getElementById('reader-images').innerHTML = images.map(img => 
+            `<img src="${img.imageUrl}" class="reader-page">`
+        ).join('');
+        modal.style.display = "flex";
+    }
+
+    window.closeReader = function() {
+        document.getElementById('reader-pane').style.display = "none";
+    }
+
+    loadContent();
 </script>
 </body>
 </html>
