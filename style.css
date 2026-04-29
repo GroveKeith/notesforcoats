@@ -31,7 +31,6 @@ body { font-family: 'Open Sans', sans-serif; color: #333; line-height: 1.6; }
 /* Hero Section */
 .hero {
     height: 80vh;
-    background: linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)), url('distillery-bg.jpg') center/cover;
     display: flex; align-items: center; justify-content: center; text-align: center; color: white;
 }
 

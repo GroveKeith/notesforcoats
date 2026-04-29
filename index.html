@@ -64,68 +64,69 @@
     </section>
 
 
-  <script src="https://unpkg.com/@sanity/client@latest/dist/index.browser.js"></script>
+  <script src="https://unpkg.com/@sanity/client@0.53.0/dist/index.browser.js"></script>
 
 <script>
-    // 2. Wait for the library and the window to be fully ready
-    window.addEventListener('load', function() {
-        
-        // Use the global 'SanityClient' object provided by the script above
-        const client = SanityClient.createClient({
-            projectId: 'askph19f',
-            dataset: 'production',
-            useCdn: true,
-            apiVersion: '2026-04-28'
-        });
-
-        async function initSite() {
-            try {
-                // Fetch Homepage Content
-                const home = await client.fetch(`*[_type == "homepage"][0]{
-                    ...,
-                    "bgUrl": backgroundImage.asset->url
-                }`);
-
-                if (home) {
-                    document.querySelector('.hero h1').innerHTML = `${home.heroH1}<span>'</span>`;
-                    document.querySelector('.hero h2').innerText = home.heroH2;
-                    document.querySelector('.hero p').innerText = home.heroP;
-                    
-                    // Fix the 404 by setting the background from Sanity
-                    if (home.bgUrl) {
-                        document.querySelector('.hero').style.backgroundImage = `linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)), url('${home.bgUrl}')`;
-                    }
-                }
-
-                // Fetch Songwriters
-                const writers = await client.fetch(`*[_type == "songwriter"] | order(year desc){
-                    name, year, "imageUrl": image.asset->url
-                }`);
-                
-                const writerGrid = document.querySelector('.writer-grid');
-                if (writerGrid && writers.length > 0) {
-                    writerGrid.innerHTML = writers.map(w => `
-                        <div class="writer-card">
-                            <div class="writer-img" style="background-image: url('${w.imageUrl}')"></div>
-                            <h4>${w.name}</h4>
-                            <p>Class of ${w.year}</p>
-                        </div>
-                    `).join('');
-                }
-            } catch (err) {
-                console.error("Sanity Error:", err);
+    // We use a self-invoking function to avoid polluting the global scope
+    (function() {
+        function initSanity() {
+            // Check if the library is ready. If not, wait 100ms and try again.
+            if (typeof SanityClient === 'undefined') {
+                console.log("Waiting for Sanity library...");
+                setTimeout(initSanity, 100);
+                return;
             }
+
+            const client = SanityClient.createClient({
+                projectId: 'askph19f',
+                dataset: 'production',
+                useCdn: true,
+                apiVersion: '2021-10-21' // Using a standard stable API version
+            });
+
+            async function loadContent() {
+                try {
+                    // Fetch Homepage
+                    const home = await client.fetch(`*[_type == "homepage"][0]{
+                        ...,
+                        "bgUrl": backgroundImage.asset->url
+                    }`);
+                    
+                    if (home) {
+                        document.querySelector('.hero h1').innerHTML = `${home.heroH1}<span>'</span>`;
+                        document.querySelector('.hero h2').innerText = home.heroH2;
+                        document.querySelector('.hero p').innerText = home.heroP;
+                        if (home.bgUrl) {
+                            document.querySelector('.hero').style.backgroundImage = `linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)), url('${home.bgUrl}')`;
+                        }
+                    }
+
+                    // Fetch Songwriters
+                    const writers = await client.fetch(`*[_type == "songwriter"] | order(year desc){
+                        name, year, "imageUrl": image.asset->url
+                    }`);
+                    
+                    const grid = document.querySelector('.writer-grid');
+                    if (grid && writers.length > 0) {
+                        grid.innerHTML = writers.map(w => `
+                            <div class="writer-card">
+                                <div class="writer-img" style="background-image: url('${w.imageUrl}')"></div>
+                                <h4>${w.name}</h4>
+                                <p>Class of ${w.year}</p>
+                            </div>
+                        `).join('');
+                    }
+                } catch (err) {
+                    console.error("Sanity connection failed:", err);
+                }
+            }
+
+            loadContent();
         }
 
-        initSite();
-    });
-
-    // Handle the Reading Pane
-    window.openReader = async function() {
-        // We'll re-init a local client or move the client variable outside the listener
-        const modal = document.getElementById('reader-pane');
-        modal.style.display = "flex";
-    }
+        // Start the check loop
+        initSanity();
+    })();
 </script>
 </body>
 </html>
