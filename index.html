@@ -64,86 +64,55 @@
     </section>
 
 
-   <script src="https://unpkg.com/@sanity/client@latest/dist/index.browser.js"></script>
+   <script src="https://unpkg.com/@sanity/client@0.53.0/dist/index.browser.js"></script>
+
 <script>
-    // Access the client from the global SanityClient object provided by the script above
-    const client = SanityClient.createClient({
-        projectId: 'askph19f', 
-        dataset: 'production',
-        useCdn: true,
-        apiVersion: '2026-04-28'
-    });
-
-    async function initSite() {
-        try {
-            // 1. Load Homepage Hero & Stats
-            const home = await client.fetch(`*[_type == "homepage"][0]`);
-            if (home) {
-                if (document.getElementById('hero-title')) 
-                    document.getElementById('hero-title').innerHTML = `${home.heroH1}<span>'</span>`;
-                if (document.getElementById('hero-subtitle')) 
-                    document.getElementById('hero-subtitle').innerText = home.heroH2;
-                if (document.getElementById('hero-desc')) 
-                    document.getElementById('hero-desc').innerText = home.heroP;
-            }
-
-            // 2. Load Songwriters - Note the projection to get the image URL
-            const writers = await client.fetch(`*[_type == "songwriter"] | order(year desc) {
-                name,
-                year,
-                "imageUrl": image.asset->url
-            }`);
-            
-            const writerGrid = document.getElementById('songwriter-grid');
-            if (writerGrid) {
-                writerGrid.innerHTML = writers.map(w => `
-                    <div class="writer-card">
-                        <div class="writer-img" style="background-image: url('${w.imageUrl}')"></div>
-                        <h4>${w.name}</h4>
-                        <p>Class of ${w.year}</p>
-                    </div>
-                `).join('');
-            }
-
-            // 3. Load Gallery
-            const photos = await client.fetch(`*[_type == "galleryImage"] {
-                title,
-                "imageUrl": image.asset->url
-            }`);
-            const galleryGrid = document.getElementById('gallery-grid');
-            if (galleryGrid) {
-                galleryGrid.innerHTML = photos.map(p => `
-                    <div class="gallery-item"><img src="${p.imageUrl}" alt="${p.title}"></div>
-                `).join('');
-            }
-        } catch (err) {
-            console.error("Sanity Fetch Error:", err);
+    // This ensures the library is fully loaded into the browser memory
+    window.onload = function() {
+        if (typeof SanityClient === 'undefined') {
+            console.error("Sanity library failed to load from CDN.");
+            return;
         }
-    }
 
-    // Attach to window so the HTML onclick can find it
-    window.openReader = async function() {
-        const modal = document.getElementById('reader-pane');
-        const images = await client.fetch(`*[_type == "aboutReader"] | order(order asc) {
-            "imageUrl": infoSheetImage.asset->url
-        }`);
-        
-        const readerContainer = document.getElementById('reader-images');
-        if (readerContainer) {
-            readerContainer.innerHTML = images.map(img => `
-                <img src="${img.imageUrl}" class="reader-page">
-            `).join('');
-        }
-        
-        modal.style.display = "flex";
-    }
+        const client = SanityClient.createClient({
+            projectId: 'askph19f', 
+            dataset: 'production',
+            useCdn: true,
+            apiVersion: '2026-04-28'
+        });
 
-    window.closeReader = function() {
-        document.getElementById('reader-pane').style.display = "none";
-    }
+        // Define your functions inside here or attach to window
+        window.initSite = async function() {
+            try {
+                const home = await client.fetch(`*[_type == "homepage"][0]`);
+                if (home) {
+                    document.querySelector('.hero h1').innerHTML = `${home.heroH1}<span>'</span>`;
+                    document.querySelector('.hero h2').innerText = home.heroH2;
+                    document.querySelector('.hero p').innerText = home.heroP;
+                }
+                
+                // Fetch Songwriters with image expansion
+                const writers = await client.fetch(`*[_type == "songwriter"] | order(year desc) {
+                    name, year, "imageUrl": image.asset->url
+                }`);
+                
+                const grid = document.querySelector('.writer-grid');
+                if (grid && writers.length > 0) {
+                    grid.innerHTML = writers.map(w => `
+                        <div class="writer-card">
+                            <div class="writer-img" style="background-image: url('${w.imageUrl}')"></div>
+                            <h4>${w.name}</h4>
+                            <p>Class of ${w.year}</p>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error("Fetch error:", err);
+            }
+        };
 
-    // Initialize the site
-    initSite();
+        initSite();
+    };
 </script>
 </body>
 </html>
