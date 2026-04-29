@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -84,3 +85,124 @@
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes for Coats' | Music for a Cure</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Notes for Coats<span>'</span></div>
+        <div class="nav-links">
+            <a href="#about">Our Mission</a>
+            <a href="#writers">Songwriters</a>
+            <a href="#sponsors">Our Sponsors</a>
+            <a href="#donate" class="btn-nav">Donate</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-overlay">
+            <img src="images/notes-for-coats-logo.jpg" alt="Notes for Coats' Logo" class="hero-logo">
+            <h1 id="hero-title">Notes for Coats<span>'</span></h1>
+            <h2 id="hero-subtitle">5 Years of Stories, Songs, and Hope</h2>
+            <p id="hero-desc">Join us at Nelson’s Green Brier Distillery for an intimate songwriter round benefiting Coats' Disease research.</p>
+            <div class="hero-btns">
+                <a href="#donate" class="btn-gold">Support the Cause</a>
+                <button onclick="openReader()" class="btn-outline">Learn More</button>
+            </div>
+        </div>
+    </header>
+
+    <div id="reader-pane" class="modal">
+        <div class="modal-content-wrapper">
+            <span class="close-btn" onclick="closeReader()">&times;</span>
+            <div id="reader-images"></div>
+        </div>
+    </div>
+
+    <section class="stats-bar">
+        <div class="stat"><h3>5</h3><p>Annual Events</p></div>
+        <div class="stat"><h3 id="stat-writers">25+</h3><p>World-Class Writers</p></div>
+        <div class="stat"><h3>Nashville</h3><p>Heart of the Music</p></div>
+    </section>
+
+    <section id="writers" class="section-padding">
+        <h2 class="section-title">The Songwriters</h2>
+        <div class="writer-grid" id="songwriter-grid">
+            </div>
+    </section>
+
+    <section id="gallery" class="section-padding">
+        <h2 class="section-title">Event Gallery</h2>
+        <div class="gallery-grid" id="gallery-grid">
+            </div>
+    </section>
+
+    <section id="sponsors" class="section-padding">
+        <h2 class="section-title">Our Partners</h2>
+        <div class="sponsor-grid" id="sponsor-grid">
+            </div>
+    </section>
+
+    <script src="https://unpkg.com/@sanity/client@latest/dist/index.browser.js"></script>
+    <script>
+        const client = SanityClient.createClient({
+            projectId: 'notesforcoats', // Found in your Sanity Ubuntu files
+            dataset: 'production',
+            useCdn: true,
+            apiVersion: '2026-04-28'
+        });
+
+        async function initSite() {
+            // 1. Load Homepage Hero & Stats
+            const home = await client.fetch(`*[_type == "homepage"][0]`);
+            if (home) {
+                document.getElementById('hero-title').innerHTML = `${home.heroH1}<span>'</span>`;
+                document.getElementById('hero-subtitle').innerText = home.heroH2;
+                document.getElementById('hero-desc').innerText = home.heroP;
+            }
+
+            // 2. Load Songwriters
+            const writers = await client.fetch(`*[_type == "songwriter"] | order(year desc)`);
+            document.getElementById('songwriter-grid').innerHTML = writers.map(w => `
+                <div class="writer-card">
+                    <div class="writer-img" style="background-image: url('${w.imageUrl}')"></div>
+                    <h4>${w.name}</h4>
+                    <p>Class of ${w.year}</p>
+                </div>
+            `).join('');
+
+            // 3. Load Gallery
+            const photos = await client.fetch(`*[_type == "galleryImage"]`);
+            document.getElementById('gallery-grid').innerHTML = photos.map(p => `
+                <div class="gallery-item"><img src="${p.imageUrl}" alt="${p.title}"></div>
+            `).join('');
+        }
+
+        async function openReader() {
+            const modal = document.getElementById('reader-pane');
+            const images = await client.fetch(`*[_type == "aboutReader"] | order(order asc)`);
+            
+            document.getElementById('reader-images').innerHTML = images.map(img => `
+                <img src="${img.imageUrl}" class="reader-page">
+            `).join('');
+            
+            modal.style.display = "flex";
+        }
+
+        function closeReader() {
+            document.getElementById('reader-pane').style.display = "none";
+        }
+
+        initSite();
+    </script>
+</body>
+</html>
+>>>>>>> 13ee3455 (Initial commit with Sanity integration)
