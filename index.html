@@ -64,12 +64,15 @@
     </section>
 
 
-<script src="https://unpkg.com/@sanity/client@0.53.0/dist/index.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sanity/client@5.2.2/dist/index.browser.js"></script>
+
 <script>
     (function() {
-        function initSanity() {
+        function startApp() {
+            // Check if the library loaded into the global window object
             if (typeof SanityClient === 'undefined') {
-                setTimeout(initSanity, 100);
+                console.warn("SanityClient not ready, retrying...");
+                setTimeout(startApp, 100);
                 return;
             }
 
@@ -80,9 +83,8 @@
                 apiVersion: '2021-10-21'
             });
 
-            async function loadContent() {
+            async function loadData() {
                 try {
-                    // 1. Fetch Homepage & Hero Background
                     const home = await client.fetch(`*[_type == "homepage"][0]{
                         ...,
                         "bgUrl": backgroundImage.asset->url
@@ -97,67 +99,13 @@
                                 `linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)), url('${home.bgUrl}')`;
                         }
                     }
-
-                    // 2. Fetch Songwriters
-                    const writers = await client.fetch(`*[_type == "songwriter"] | order(year desc){
-                        name, year, "imageUrl": image.asset->url
-                    }`);
-                    const writerGrid = document.getElementById('songwriter-grid');
-                    if (writerGrid && writers.length > 0) {
-                        writerGrid.innerHTML = writers.map(w => `
-                            <div class="writer-card">
-                                <div class="writer-img" style="background-image: url('${w.imageUrl}')"></div>
-                                <h4>${w.name}</h4>
-                                <p>Class of ${w.year}</p>
-                            </div>
-                        `).join('');
-                    }
-
-                    // 3. Fetch Event Gallery
-                    const photos = await client.fetch(`*[_type == "galleryImage"]{
-                        title, "imageUrl": image.asset->url
-                    }`);
-                    const galleryGrid = document.getElementById('gallery-grid');
-                    if (galleryGrid) {
-                        galleryGrid.innerHTML = photos.map(p => `
-                            <div class="gallery-item"><img src="${p.imageUrl}" alt="${p.title}"></div>
-                        `).join('');
-                    }
-
-                    // 4. Fetch Sponsors/Partners
-                    const sponsors = await client.fetch(`*[_type == "sponsor"]{
-                        name, "imageUrl": logo.asset->url
-                    }`);
-                    const sponsorGrid = document.getElementById('sponsor-grid');
-                    if (sponsorGrid) {
-                        sponsorGrid.innerHTML = sponsors.map(s => `
-                            <div class="sponsor-item"><img src="${s.imageUrl}" alt="${s.name}"></div>
-                        `).join('');
-                    }
                 } catch (err) {
-                    console.error("Sanity connection failed:", err);
+                    console.error("Sanity Fetch Error:", err);
                 }
             }
-
-            // Global functions for the Reading Pane
-            window.openReader = async function() {
-                const modal = document.getElementById('reader-pane');
-                const images = await client.fetch(`*[_type == "aboutReader"] | order(order asc){
-                    "imageUrl": infoSheetImage.asset->url
-                }`);
-                document.getElementById('reader-images').innerHTML = images.map(img => 
-                    `<img src="${img.imageUrl}" class="reader-page">`
-                ).join('');
-                modal.style.display = "flex";
-            }
-
-            window.closeReader = function() {
-                document.getElementById('reader-pane').style.display = "none";
-            }
-
-            loadContent();
+            loadData();
         }
-        initSanity();
+        startApp();
     })();
 </script>
 </body>
