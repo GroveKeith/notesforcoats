@@ -64,15 +64,11 @@
     </section>
 
 
-  <script src="https://unpkg.com/@sanity/client@0.53.0/dist/index.browser.js"></script>
-
+<script src="https://unpkg.com/@sanity/client@0.53.0/dist/index.browser.js"></script>
 <script>
-    // We use a self-invoking function to avoid polluting the global scope
     (function() {
         function initSanity() {
-            // Check if the library is ready. If not, wait 100ms and try again.
             if (typeof SanityClient === 'undefined') {
-                console.log("Waiting for Sanity library...");
                 setTimeout(initSanity, 100);
                 return;
             }
@@ -81,34 +77,34 @@
                 projectId: 'askph19f',
                 dataset: 'production',
                 useCdn: true,
-                apiVersion: '2021-10-21' // Using a standard stable API version
+                apiVersion: '2021-10-21'
             });
 
             async function loadContent() {
                 try {
-                    // Fetch Homepage
+                    // 1. Fetch Homepage & Hero Background
                     const home = await client.fetch(`*[_type == "homepage"][0]{
                         ...,
                         "bgUrl": backgroundImage.asset->url
                     }`);
                     
                     if (home) {
-                        document.querySelector('.hero h1').innerHTML = `${home.heroH1}<span>'</span>`;
-                        document.querySelector('.hero h2').innerText = home.heroH2;
-                        document.querySelector('.hero p').innerText = home.heroP;
+                        document.getElementById('hero-title').innerHTML = `${home.heroH1}<span>'</span>`;
+                        document.getElementById('hero-subtitle').innerText = home.heroH2;
+                        document.getElementById('hero-desc').innerText = home.heroP;
                         if (home.bgUrl) {
-                            document.querySelector('.hero').style.backgroundImage = `linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)), url('${home.bgUrl}')`;
+                            document.querySelector('.hero').style.backgroundImage = 
+                                `linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)), url('${home.bgUrl}')`;
                         }
                     }
 
-                    // Fetch Songwriters
+                    // 2. Fetch Songwriters
                     const writers = await client.fetch(`*[_type == "songwriter"] | order(year desc){
                         name, year, "imageUrl": image.asset->url
                     }`);
-                    
-                    const grid = document.querySelector('.writer-grid');
-                    if (grid && writers.length > 0) {
-                        grid.innerHTML = writers.map(w => `
+                    const writerGrid = document.getElementById('songwriter-grid');
+                    if (writerGrid && writers.length > 0) {
+                        writerGrid.innerHTML = writers.map(w => `
                             <div class="writer-card">
                                 <div class="writer-img" style="background-image: url('${w.imageUrl}')"></div>
                                 <h4>${w.name}</h4>
@@ -116,15 +112,51 @@
                             </div>
                         `).join('');
                     }
+
+                    // 3. Fetch Event Gallery
+                    const photos = await client.fetch(`*[_type == "galleryImage"]{
+                        title, "imageUrl": image.asset->url
+                    }`);
+                    const galleryGrid = document.getElementById('gallery-grid');
+                    if (galleryGrid) {
+                        galleryGrid.innerHTML = photos.map(p => `
+                            <div class="gallery-item"><img src="${p.imageUrl}" alt="${p.title}"></div>
+                        `).join('');
+                    }
+
+                    // 4. Fetch Sponsors/Partners
+                    const sponsors = await client.fetch(`*[_type == "sponsor"]{
+                        name, "imageUrl": logo.asset->url
+                    }`);
+                    const sponsorGrid = document.getElementById('sponsor-grid');
+                    if (sponsorGrid) {
+                        sponsorGrid.innerHTML = sponsors.map(s => `
+                            <div class="sponsor-item"><img src="${s.imageUrl}" alt="${s.name}"></div>
+                        `).join('');
+                    }
                 } catch (err) {
                     console.error("Sanity connection failed:", err);
                 }
             }
 
+            // Global functions for the Reading Pane
+            window.openReader = async function() {
+                const modal = document.getElementById('reader-pane');
+                const images = await client.fetch(`*[_type == "aboutReader"] | order(order asc){
+                    "imageUrl": infoSheetImage.asset->url
+                }`);
+                document.getElementById('reader-images').innerHTML = images.map(img => 
+                    `<img src="${img.imageUrl}" class="reader-page">`
+                ).join('');
+                modal.style.display = "flex";
+            }
+
+            window.closeReader = function() {
+                document.getElementById('reader-pane').style.display = "none";
+            }
+
             loadContent();
         }
-
-        // Start the check loop
         initSanity();
     })();
 </script>
