@@ -65,7 +65,6 @@
 
 
 <script type="module">
-    // Import the client directly from a module-friendly CDN
     import { createClient } from 'https://esm.sh/@sanity/client@5.2.2';
 
     const client = createClient({
@@ -77,20 +76,20 @@
 
     async function loadContent() {
         try {
-            // Fetch Homepage & Hero Background
+            // 1. Fetch Homepage Data
             const home = await client.fetch(`*[_type == "homepage"][0]{
                 ...,
                 "bgUrl": backgroundImage.asset->url
             }`);
             
             if (home) {
-                document.getElementById('hero-title').innerHTML = `${home.heroH1}|| 'Notes for Coats'}<span>'</span>`;
+                // Fixed the missing '{' in your template literal below
+                document.getElementById('hero-title').innerHTML = `${home.heroH1 || 'Notes for Coats'}<span>'</span>`;
                 document.getElementById('hero-subtitle').innerText = home.heroH2 || '5 Years of Stories';
                 document.getElementById('hero-desc').innerText = home.heroP || 'Join us for an intimate songwriter round.';
-                }
-            }
+            } // Removed the extra brace that was here
 
-            // Fetch Songwriters
+            // 2. Fetch Songwriters
             const writers = await client.fetch(`*[_type == "songwriter"] | order(year desc){
                 name, year, "imageUrl": image.asset->url
             }`);
@@ -104,34 +103,39 @@
                     </div>
                 `).join('');
             }
+
 			// 3. Fetch Event Gallery
-                    const photos = await client.fetch(`*[_type == "galleryImage"]{
-                        title, "imageUrl": image.asset->url
-                    }`);
-                    const galleryGrid = document.getElementById('gallery-grid');
-                    if (galleryGrid) {
-                        galleryGrid.innerHTML = photos.map(p => `
-                            <div class="gallery-item">
-                                <img src="${p.imageUrl}" alt="${p.title}">
-                                <p class="gallery-caption">${p.title || ''}</p>
-                                </div>
-                        `).join('');
-                    }
+            const photos = await client.fetch(`*[_type == "galleryImage"]{
+                title, "imageUrl": image.asset->url
+            }`);
+            const galleryGrid = document.getElementById('gallery-grid');
+            if (galleryGrid) {
+                galleryGrid.innerHTML = photos.map(p => `
+                    <div class="gallery-item">
+                        <img src="${p.imageUrl}" alt="${p.title}">
+                        <p class="gallery-caption">${p.title || ''}</p>
+                    </div>
+                `).join('');
+            }
         } catch (err) {
-            console.error("Sanity connection failed:", err);
+            console.error("Sanity content load failed:", err);
         }
     }
 
-    // Attach Reader functions to 'window' so your HTML buttons can still see them
+    // Added a try/catch here to prevent the modal from hanging on error
     window.openReader = async function() {
-        const modal = document.getElementById('reader-pane');
-        const images = await client.fetch(`*[_type == "aboutReader"] | order(order asc){
-            "imageUrl": infoSheetImage.asset->url
-        }`);
-        document.getElementById('reader-images').innerHTML = images.map(img => 
-            `<img src="${img.imageUrl}" class="reader-page">`
-        ).join('');
-        modal.style.display = "flex";
+        try {
+            const modal = document.getElementById('reader-pane');
+            const images = await client.fetch(`*[_type == "aboutReader"] | order(order asc){
+                "imageUrl": infoSheetImage.asset->url
+            }`);
+            document.getElementById('reader-images').innerHTML = images.map(img => 
+                `<img src="${img.imageUrl}" class="reader-page">`
+            ).join('');
+            modal.style.display = "flex";
+        } catch (err) {
+            console.error("Reader failed to open:", err);
+        }
     }
 
     window.closeReader = function() {
