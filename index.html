@@ -84,12 +84,9 @@
             }`);
             
             if (home) {
-                document.getElementById('hero-title').innerHTML = `${home.heroH1}<span>'</span>`;
-                document.getElementById('hero-subtitle').innerText = home.heroH2;
-                document.getElementById('hero-desc').innerText = home.heroP;
-                if (home.bgUrl) {
-                    document.querySelector('.hero').style.backgroundImage = 
-                        `linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)), url('${home.bgUrl}')`;
+                document.getElementById('hero-title').innerHTML = `${home.heroH1}|| 'Notes for Coats'}<span>'</span>`;
+                document.getElementById('hero-subtitle').innerText = home.heroH2 || '5 Years of Stories';
+                document.getElementById('hero-desc').innerText = home.heroP || 'Join us for an intimate songwriter round.';
                 }
             }
 
@@ -114,7 +111,10 @@
                     const galleryGrid = document.getElementById('gallery-grid');
                     if (galleryGrid) {
                         galleryGrid.innerHTML = photos.map(p => `
-                            <div class="gallery-item"><img src="${p.imageUrl}" alt="${p.title}"></div>
+                            <div class="gallery-item">
+                                <img src="${p.imageUrl}" alt="${p.title}">
+                                <p class="gallery-caption">${p.title || ''}</p>
+                                </div>
                         `).join('');
                     }
         } catch (err) {
