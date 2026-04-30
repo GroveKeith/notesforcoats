@@ -75,67 +75,69 @@
     });
 
     async function loadContent() {
-        try {
-            // 1. Fetch Homepage Data
-            const home = await client.fetch(`*[_type == "homepage"][0]{
-                ...,
-                "bgUrl": backgroundImage.asset->url
-            }`);
-            
-            if (home) {
-                // Fixed the missing '{' in your template literal below
-                document.getElementById('hero-title').innerHTML = `${home.heroH1 || 'Notes for Coats'}<span>'</span>`;
-                document.getElementById('hero-subtitle').innerText = home.heroH2 || '5 Years of Stories, Songs, and Hope';
-                document.getElementById('hero-desc').innerText = home.heroP || 'Join us for an intimate songwriter round.';
-            } // Removed the extra brace that was here
-
-            // 2. Fetch Songwriters
-            const writers = await client.fetch(`*[_type == "songwriter"] | order(year desc){
-                name, year, "imageUrl": image.asset->url
-            }`);
-            const grid = document.getElementById('songwriter-grid');
-            if (grid && writers.length > 0) {
-                grid.innerHTML = writers.map(w => `
-                    <div class="writer-card">
-                        <div class="writer-img" style="background-image: url('${w.imageUrl}')"></div>
-                        <h4>${w.name}</h4>
-                        <p>Class of ${w.year}</p>
-                    </div>
-                `).join('');
-            }
-
-			// 3. Fetch Event Gallery
-            const photos = await client.fetch(`*[_type == "galleryImage"]{
-                title, "imageUrl": image.asset->url
-            }`);
-            const galleryGrid = document.getElementById('gallery-grid');
-            if (galleryGrid) {
-                galleryGrid.innerHTML = photos.map(p => `
-                    <div class="gallery-item">
-                        <img src="${p.imageUrl}" alt="${p.title}">
-                        <p class="gallery-caption">${p.title || ''}</p>
-                    </div>
-                `).join('');
-            }
-            // 4. Fetch Partner Logos with Links
-            const partners = await client.fetch(`*[_type == "partner"]{
-                name, url, "logoUrl": logo.asset->url
-            }`);
-
-            const sponsorGrid = document.getElementById('sponsor-grid');
-            if (sponsorGrid && partners.length > 0) {
-                sponsorGrid.innerHTML = partners.map(p => `
-                    <div class="sponsor-item">
-                        <a href="${p.url || '#'}" target="_blank" rel="noopener noreferrer">
-                        <img src="${p.logoUrl}" alt="${p.name}">
-                        </a>
-                    </div>
-                `).join('');
-            }
-        } catch (err) {
-            console.error("Sanity content load failed:", err);
+    try {
+        // 1. Fetch Homepage Data
+        const home = await client.fetch(`*[_type == "homepage"][0]{
+            ...,
+            "bgUrl": backgroundImage.asset->url
+        }`);
+        
+        if (home) {
+            document.getElementById('hero-title').innerHTML = `${home.heroH1 || 'Notes for Coats'}<span>'</span>`;
+            document.getElementById('hero-subtitle').innerText = home.heroH2 || '5 Years of Stories, Songs, and Hope';
+            document.getElementById('hero-desc').innerText = home.heroP || 'Join us for an intimate songwriter round.';
         }
+
+        // 2. Fetch Songwriters
+        const writers = await client.fetch(`*[_type == "songwriter"] | order(year desc){
+            name, year, "imageUrl": image.asset->url
+        }`);
+        const grid = document.getElementById('songwriter-grid');
+        if (grid && writers.length > 0) {
+            grid.innerHTML = writers.map(w => `
+                <div class="writer-card">
+                    <div class="writer-img" style="background-image: url('${w.imageUrl}')"></div>
+                    <h4>${w.name}</h4>
+                    <p>Class of ${w.year}</p>
+                </div>
+            `).join('');
+        }
+
+        // 3. Fetch Event Gallery
+        const photos = await client.fetch(`*[_type == "galleryImage"]{
+            title, "imageUrl": image.asset->url
+        }`);
+        const galleryGrid = document.getElementById('gallery-grid');
+        if (galleryGrid) {
+            galleryGrid.innerHTML = photos.map(p => `
+                <div class="gallery-item">
+                    <img src="${p.imageUrl}" alt="${p.title}">
+                    <p class="gallery-caption">${p.title || ''}</p>
+                </div>
+            `).join('');
+        }
+
+        // 4. Fetch Partner Logos
+        const partners = await client.fetch(`*[_type == "partner"]{
+            name,
+            url,
+            "logoUrl": logo.asset->url
+        }`);
+        const sponsorGrid = document.getElementById('sponsor-grid');
+        if (sponsorGrid && partners.length > 0) {
+            sponsorGrid.innerHTML = partners.map(p => `
+                <div class="sponsor-item">
+                    <a href="${p.url || '#'}" target="_blank" rel="noopener noreferrer">
+                        <img src="${p.logoUrl}" alt="${p.name}">
+                    </a>
+                </div>
+            `).join('');
+        }
+
+    } catch (err) {
+        console.error("Sanity content load failed:", err);
     }
+}
 
     // Added a try/catch here to prevent the modal from hanging on error
     window.openReader = async function() {
