@@ -46,19 +46,39 @@ body { font-family: 'Open Sans', sans-serif; color: #333; line-height: 1.6; }
 .hero p { max-width: 700px; margin: 20px auto; font-size: 1.2rem; }
 
 /* Buttons */
-.btn-gold { background: var(--gold); color: var(--navy); padding: 15px 30px; text-decoration: none; font-weight: 800; border-radius: 4px; display: inline-block; margin-right: 10px; }
+.btn-gold { 
+    background: var(--gold); 
+    color: var(--navy); 
+    padding: 15px 30px; 
+    text-decoration: none; 
+    font-weight: 800; 
+    border-radius: 4px; 
+    display: inline-block; 
+    margin-right: 10px; 
+    transition: transform 0.3s ease;
+}
+
 .btn-outline {
-    background: var(--blue); /* Uses #0071bc[cite: 1] */
-    color: var(--white);
+    background: rgba(255, 255, 255, 0.1); /* Subtle transparent tint */
+    color: var(--white); /* Uses #ffffff */
     padding: 13px 30px;
-    border: none;
+    border: 2px solid var(--white); /* Thick, clear border */
     border-radius: 4px;
     display: inline-block;
     font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .btn-outline:hover {
-    filter: brightness(1.1); /* Glows slightly on hover */
+    background: var(--white);
+    color: var(--navy); /* Inverts colors for high visibility[cite: 7] */
+    transform: translateY(-3px); /* Physical lift effect */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.btn-gold:hover {
+    transform: translateY(-3px);
 }
 
 /* Stats Bar */
