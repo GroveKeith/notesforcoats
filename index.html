@@ -107,6 +107,16 @@
                     </div>
                 `).join('');
             }
+			// 3. Fetch Event Gallery
+                    const photos = await client.fetch(`*[_type == "galleryImage"]{
+                        title, "imageUrl": image.asset->url
+                    }`);
+                    const galleryGrid = document.getElementById('gallery-grid');
+                    if (galleryGrid) {
+                        galleryGrid.innerHTML = photos.map(p => `
+                            <div class="gallery-item"><img src="${p.imageUrl}" alt="${p.title}"></div>
+                        `).join('');
+                    }
         } catch (err) {
             console.error("Sanity connection failed:", err);
         }
