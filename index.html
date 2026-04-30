@@ -14,8 +14,8 @@
         <div class="nav-links">
             <a href="#about">Our Mission</a>
             <a href="#writers">Songwriters</a>
-            <a href="#sponsors">Our Sponsors</a>
-            <a href="#donate" class="btn-nav">Donate</a>
+            <a href="#sponsors">Our Partners</a>
+            <a href="https://coatsdiseasefoundation.networkforgood.com/projects/264953-20-years-of-hope-one-vision-a-cure" class="btn-nav">Donate</a>
         </div>
     </nav>
 
@@ -26,7 +26,7 @@
             <h2 id="hero-subtitle">5 Years of Stories, Songs, and Hope</h2>
             <p id="hero-desc">Join us at Nelson’s Green Brier Distillery for an intimate songwriter round benefiting Coats' Disease research.</p>
             <div class="hero-btns">
-                <a href="#donate" class="btn-gold">Support the Cause</a>
+                <a href="https://coatsdiseasefoundation.networkforgood.com/projects/264953-20-years-of-hope-one-vision-a-cure" class="btn-gold">Support the Cause</a>
                 <button onclick="openReader()" class="btn-outline">Learn More</button>
             </div>
         </div>
@@ -85,7 +85,7 @@
             if (home) {
                 // Fixed the missing '{' in your template literal below
                 document.getElementById('hero-title').innerHTML = `${home.heroH1 || 'Notes for Coats'}<span>'</span>`;
-                document.getElementById('hero-subtitle').innerText = home.heroH2 || '5 Years of Stories';
+                document.getElementById('hero-subtitle').innerText = home.heroH2 || '5 Years of Stories, Songs, and Hope';
                 document.getElementById('hero-desc').innerText = home.heroP || 'Join us for an intimate songwriter round.';
             } // Removed the extra brace that was here
 
@@ -114,6 +114,21 @@
                     <div class="gallery-item">
                         <img src="${p.imageUrl}" alt="${p.title}">
                         <p class="gallery-caption">${p.title || ''}</p>
+                    </div>
+                `).join('');
+            }
+            // 4. Fetch Partner Logos with Links
+            const partners = await client.fetch(`*[_type == "partner"]{
+                name, url, "logoUrl": logo.asset->url
+            }`);
+
+            const sponsorGrid = document.getElementById('sponsor-grid');[cite, 8]
+            if (sponsorGrid && partners.length > 0) {
+                sponsorGrid.innerHTML = partners.map(p => `
+                    <div class="sponsor-item">
+                        <a href="${p.url || '#'}" target="_blank" rel="noopener noreferrer">
+                        <img src="${p.logoUrl}" alt="${p.name}">
+                        </a>
                     </div>
                 `).join('');
             }

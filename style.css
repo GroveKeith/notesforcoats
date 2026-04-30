@@ -99,18 +99,22 @@ body { font-family: 'Open Sans', sans-serif; color: #333; line-height: 1.6; }
     margin: 0 auto;
 }
 
+.sponsor-item a {
+    display: block; /* Makes the entire area of the logo clickable */
+}
+
 .sponsor-item img {
-    max-width: 180px; /* Limits the width so they don't get too big */
+    max-width: 180px;
     height: auto;
-    filter: grayscale(100%); /* Makes them all uniform gray */
+    filter: grayscale(100%);
     opacity: 0.7;
     transition: all 0.3s ease;
 }
 
 .sponsor-item img:hover {
-    filter: grayscale(0%); /* Pops to color on hover */
+    filter: grayscale(0%);
     opacity: 1;
-    transform: scale(1.05); /* Slight grow effect */
+    transform: scale(1.05);
 }
 
 /* On mobile, make them a bit smaller */
