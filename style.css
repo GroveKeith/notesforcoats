@@ -31,8 +31,13 @@ body { font-family: 'Open Sans', sans-serif; color: #333; line-height: 1.6; }
 /* Hero Section */
 .hero {
     height: 80vh;
-	background-color: linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7);
-    display: flex; align-items: center; justify-content: center; text-align: center; color: white;
+    /* Use 'background' instead of 'background-color' for gradients */
+    background: linear-gradient(rgba(0, 51, 102, 0.7), rgba(0, 51, 102, 0.7));
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    text-align: center; 
+    color: white;
 }
 
 .hero h1 { font-family: 'Montserrat', sans-serif; font-size: 4rem; margin-bottom: 10px; }
