@@ -55,30 +55,6 @@ body { font-family: 'Open Sans', sans-serif; color: #333; line-height: 1.6; }
     opacity: 0.8;      /* Softens the text for a high-end look */
 }
 
-/* Specific adjustments for HD / Standard Desktop (1024px to 1920px) */
-@media (min-width: 1024px) and (max-width: 2080px) {
-    .hero {
-        height: 70vh; /* Reduced from 80vh to prevent excessive scrolling */
-        padding: 40px;
-    }
-
-    .hero h1 {
-        font-size: 3rem; /* Scaled down from 4rem for better fit */
-    }
-
-    .hero p {
-        font-size: 1.1rem;
-        max-width: 90%; /* Uses 80% of the screen width instead of a fixed pixel count */
-		line-height: 1.8; /* Adding a bit more space between lines helps readability when lines are long */
-        margin: 15px auto;
-    }
-
-    .hero-logo {
-        max-width: 360px; /* Slightly smaller logo for standard HD */
-    }
-}
-
-
 /* Buttons */
 .btn-gold { 
     background: var(--gold); 
@@ -296,4 +272,27 @@ body { font-family: 'Open Sans', sans-serif; color: #333; line-height: 1.6; }
     margin-bottom: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     border: 1px solid #444;
+}
+
+/* Specific adjustments for HD / Standard Desktop (1024px to 1920px) */
+@media (min-width: 1024px) and (max-width: 2080px) {
+    .hero {
+        height: 70vh; /* Reduced from 80vh to prevent excessive scrolling */
+        padding: 40px;
+    }
+
+    .hero h1 {
+        font-size: 3rem; /* Scaled down from 4rem for better fit */
+    }
+
+    .hero p {
+        font-size: 1.1rem;
+        max-width: 90%; /* Uses 80% of the screen width instead of a fixed pixel count */
+		line-height: 1.8; /* Adding a bit more space between lines helps readability when lines are long */
+        margin: 15px auto;
+    }
+
+    .hero-logo {
+        max-width: 360px; /* Slightly smaller logo for standard HD */
+    }
 }
