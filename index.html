@@ -102,21 +102,21 @@
                 </div>
             `).join('');
         }
-
         // 3. Fetch Event Gallery
         const photos = await client.fetch(`*[_type == "galleryImage"]{
-            title, "imageUrl": image.asset->url
+            title, 
+            "imageUrl": image.asset->url
         }`);
+
         const galleryGrid = document.getElementById('gallery-grid');
         if (galleryGrid) {
             galleryGrid.innerHTML = photos.map(p => `
-                <div class="gallery-item">
+                <div class="gallery-item" onclick="expandImage('${p.imageUrl}')" style="cursor: pointer;">
                     <img src="${p.imageUrl}" alt="${p.title}">
                     <p class="gallery-caption">${p.title || ''}</p>
                 </div>
             `).join('');
         }
-
         // 4. Fetch Partner Logos
         const partners = await client.fetch(`*[_type == "partner"]{
             name,
@@ -154,6 +154,20 @@
             console.error("Reader failed to open:", err);
         }
     }
+    //function to use the reader-pane for the expanded image
+    window.expandImage = function(url) {
+    const modal = document.getElementById('reader-pane');
+    const container = document.getElementById('reader-images');
+    
+    // Clear previous content and insert the single large image
+    container.innerHTML = `
+        <div style="text-align: center;">
+            <img src="${url}" style="max-width: 100%; height: auto; max-height: 85vh; border: 3px solid var(--gold); border-radius: 4px;">
+        </div>
+    `;
+    
+    modal.style.display = "flex";
+    };
 
     window.closeReader = function() {
         document.getElementById('reader-pane').style.display = "none";
