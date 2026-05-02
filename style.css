@@ -283,6 +283,7 @@ body { font-family: 'Open Sans', sans-serif; color: #333; line-height: 1.6; }
 
     .hero h1 {
         font-size: 3rem; /* Scaled down from 4rem for better fit */
+		color: lime !important; /* Turns your hero text bright green */
     }
 
     .hero p {
@@ -295,4 +296,8 @@ body { font-family: 'Open Sans', sans-serif; color: #333; line-height: 1.6; }
     .hero-logo {
         max-width: 360px; /* Slightly smaller logo for standard HD */
     }
+	body {
+        border: 10px solid red !important; /* Forces a giant red border around the whole site */
+    }
+
 }
