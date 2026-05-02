@@ -88,14 +88,14 @@
             document.getElementById('hero-desc').innerText = home.heroP || 'Join us at Nelson\’s Green Brier Distillery for an intimate songwriter round benefiting Coats\' Disease research. Join us at Nelson\’s Green Brier Distillery for an intimate songwriter round benefiting Coats\' Disease research. Notes for Coats\' is a Tennessee based chapter of the Jack McGovern Coats\' Disease Foundation 501(c)(3) ID #26-2439083.';
         }
 
-        // 2. Fetch Songwriters
+        // 2. Fetch Songwriters (Updated for click-to-expand)
         const writers = await client.fetch(`*[_type == "songwriter"] | order(year desc){
             name, year, "imageUrl": image.asset->url
         }`);
         const grid = document.getElementById('songwriter-grid');
         if (grid && writers.length > 0) {
             grid.innerHTML = writers.map(w => `
-                <div class="writer-card">
+                <div class="writer-card" onclick="expandImage('${w.imageUrl}')" style="cursor: pointer;">
                     <div class="writer-img" style="background-image: url('${w.imageUrl}')"></div>
                     <h4>${w.name}</h4>
                     <p>Class of ${w.year}</p>
@@ -155,18 +155,20 @@
         }
     }
     //function to use the reader-pane for the expanded image
-    window.expandImage = function(url) {
-    const modal = document.getElementById('reader-pane');
-    const container = document.getElementById('reader-images');
+    // Add this to your script, replacing the previous expandImage function
+    window.expandImage = function(url, title = "Notes for Coats' Event Photo") {
+        const modal = document.getElementById('reader-pane');
+        const container = document.getElementById('reader-images');
     
-    // Clear previous content and insert the single large image
-    container.innerHTML = `
-        <div style="text-align: center;">
-            <img src="${url}" style="max-width: 100%; height: auto; max-height: 85vh; border: 3px solid var(--gold); border-radius: 4px;">
-        </div>
-    `;
+        // Clear previous content and insert the single large image with a title
+        container.innerHTML = `
+            <div style="text-align: center; color: white;">
+                <h3 style="margin-bottom: 15px; font-family: 'Montserrat';">${title}</h3>
+                <img src="${url}" style="max-width: 100%; height: auto; max-height: 80vh; border: 3px solid var(--gold); border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            </div>
+        `;
     
-    modal.style.display = "flex";
+        modal.style.display = "flex";
     };
 
     window.closeReader = function() {
