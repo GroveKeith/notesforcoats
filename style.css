@@ -208,6 +208,37 @@ body { font-family: 'Open Sans', sans-serif; color: #333; line-height: 1.6; }
 }
 .gallery-item img:hover { transform: scale(1.03); }
 
+/* Mobile-First Slider Logic */
+@media (max-width: 767px) {
+    .writer-grid, .gallery-grid {
+        display: flex; /* Switch from grid to flex for horizontal layout */
+        overflow-x: auto; /* Enable horizontal scrolling */
+        scroll-snap-type: x mandatory; /* Makes the images "snap" into place */
+        gap: 15px;
+        padding: 10px 20px 30px 20px; /* Extra bottom padding for the scrollbar */
+        scrollbar-width: none; /* Hides scrollbar on Firefox */
+    }
+
+    .writer-grid::-webkit-scrollbar, 
+    .gallery-grid::-webkit-scrollbar {
+        display: none; /* Hides scrollbar on Chrome/Safari */
+    }
+
+    .writer-card, .gallery-item {
+        flex: 0 0 80%; /* Each card takes up 80% of the screen width */
+        scroll-snap-align: center; /* Snaps the card to the center of the screen */
+    }
+}
+
+/* Desktop: Revert to Grid */
+@media (min-width: 768px) {
+    .writer-grid, .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 30px;
+    }
+}
+
 /* Reading Pane Modal */
 .modal {
     display: none; 
