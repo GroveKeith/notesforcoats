@@ -25,5 +25,11 @@ export const partner = defineType({
         scheme: ['http', 'https']
       })
     }),
+    defineField({
+      name: 'order',
+      title: 'Display Order',
+      type: 'number',
+      description: 'The sequence in which the images appear in the reader.',
+    }),
   ],
 })
