@@ -45,10 +45,28 @@ body { font-family: 'Open Sans', sans-serif; color: #333; line-height: 1.6; }
 .hero h1 span { color: var(--gold); }
 .hero p { max-width: 700px; margin: 20px auto; font-size: 1.2rem; }
 
-/* Example: Min 2rem, scales with width, Max 4rem */
-.hero h1 {
-    font-size: clamp(2rem, 5vw, 4rem); 
+/* Specific adjustments for HD / Standard Desktop (1024px to 1920px) */
+@media (min-width: 1024px) and (max-width: 1920px) {
+    .hero {
+        height: 70vh; /* Reduced from 80vh to prevent excessive scrolling */
+        padding: 40px;
+    }
+
+    .hero h1 {
+        font-size: 3rem; /* Scaled down from 4rem for better fit */
+    }
+
+    .hero p {
+        font-size: 1.1rem;
+        max-width: 600px; /* Constrain width to prevent "long-line" eye fatigue */
+        margin: 15px auto;
+    }
+
+    .hero-logo {
+        max-width: 360px; /* Slightly smaller logo for standard HD */
+    }
 }
+
 
 /* Buttons */
 .btn-gold { 
