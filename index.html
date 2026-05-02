@@ -122,10 +122,12 @@
             `).join('');
         }
         // 4. Fetch Partner Logos
-        const partners = await client.fetch(`*[_type == "partner"]{
+        // 4. Fetch Partner Logos sorted by Display Order
+        const partners = await client.fetch(`*[_type == "partner"] | order(order asc) {
             name,
             url,
-            "logoUrl": logo.asset->url
+            "logoUrl": logo.asset->url,
+            order
         }`);
         const sponsorGrid = document.getElementById('sponsor-grid');
         if (sponsorGrid && partners.length > 0) {
