@@ -33,11 +33,19 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: Collect site files
+        # Publish the public site only. The Sanity Studio source (/studio) and
+        # repo tooling stay out of the deployed site.
+        run: |
+          mkdir _site
+          tar --exclude='./.git' --exclude='./.github' --exclude='./.gitignore' \
+              --exclude='./studio' --exclude='node_modules' --exclude='./_site' \
+              -cf - . | tar -xf - -C _site
+          echo "Publishing:" && ls -la _site && du -sh _site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          path: '_site'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
